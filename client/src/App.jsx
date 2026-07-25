@@ -24,9 +24,9 @@ function App() {
       setLoading(true);
       setResult(null);
 
-      const response = await api.post("/audit", {
-        url,
-      });
+    const response = await api.post("/audit", {
+  url,
+});
 
       setResult(response.data.data);
 
