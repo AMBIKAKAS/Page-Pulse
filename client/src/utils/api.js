@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export default axios.create({
-    baseURL: "https://page-pulse-backend-t6np.onrender.com/",
-    timeout:10000
+  baseURL: "https://page-pulse-backend-t6np.onrender.com/api",
+  timeout: 10000,
 });
