@@ -53,9 +53,7 @@ function App() {
       />
 
       <main className="relative min-h-screen overflow-hidden">
-
         <div className="mx-auto max-w-7xl px-6 py-14">
-
           <Hero />
 
           <SearchBar
@@ -68,9 +66,7 @@ function App() {
           <ResultSection result={result} />
 
           <Footer />
-
         </div>
-
       </main>
     </>
   );
