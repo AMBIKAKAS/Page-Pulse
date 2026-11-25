@@ -1,22 +1,24 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
+const connectDB = require("./config/db");
+
 const auditRoutes = require("./routes/auditRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Root route
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "🚀 Page Pulse API is running",
+    message: "Page Pulse API is running",
   });
 });
 
-// Health check
 app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -24,10 +26,12 @@ app.get("/health", (req, res) => {
   });
 });
 
-// API routes
+// Authentication routes
+app.use("/api/auth", authRoutes);
+
+// Protected audit routes
 app.use("/api", auditRoutes);
 
-// Handle 404 routes
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -35,7 +39,6 @@ app.use((req, res) => {
   });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
   console.error("Server Error:", err);
 
@@ -47,6 +50,12 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+const startServer = async () => {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log(`Page Pulse server running on port ${PORT}`);
+  });
+};
+
+startServer();

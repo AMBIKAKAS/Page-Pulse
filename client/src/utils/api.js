@@ -1,6 +1,19 @@
+
 import axios from "axios";
 
-export default axios.create({
-  baseURL: "https://page-pulse-backend-t6np.onrender.com/api",
-  timeout: 10000,
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
+  timeout: 30000,
 });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("pagepulse_token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+export default api;

@@ -1,0 +1,22 @@
+
+.env
+server/.env
+node_modules/
+
+# Dependencies
+**/node_modules/
+
+# Environment secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Build output
+**/dist/
+
+# Editor files
+.vscode/
+
+# Logs
+*.log
+.DS_Store
