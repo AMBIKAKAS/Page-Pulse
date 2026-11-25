@@ -46,8 +46,8 @@ export default function Footer() {
         <div className="my-8 h-px bg-slate-800"></div>
 
         <p className="text-center font-semibold text-cyan-400">
-  Ambika Kashyap
-</p>
+            Built by Ambika Kashyap
+          </p>
 
       </div>
     </footer>
