@@ -350,10 +350,35 @@ export default function ResultSection({ result }) {
                       {link.status || "N/A"}
                     </td>
                     <td className="px-3 py-4">
-                      <span className="inline-flex items-center gap-2 text-rose-400">
-                        <XCircle size={15} />
-                        {link.message || "Broken"}
-                      </span>
+                      {(() => {
+                        const code = Number(link.status);
+                        const isBroken = Number.isFinite(code) && code >= 400;
+                        const isRedirect = Number.isFinite(code) && code >= 300 && code < 400;
+                        const isWorking = Number.isFinite(code) && code >= 200 && code < 300;
+
+                        const label = isBroken
+                          ? "Broken"
+                          : isRedirect
+                            ? "Redirected"
+                            : isWorking
+                              ? "Working"
+                              : "Unverified";
+
+                        const color = isBroken
+                          ? "text-rose-400"
+                          : isWorking || isRedirect
+                            ? "text-emerald-400"
+                            : "text-amber-400";
+
+                        return (
+                          <span className={`inline-flex items-center gap-2 ${color}`}>
+                            {isBroken
+                              ? <XCircle size={15} />
+                              : <CheckCircle2 size={15} />}
+                            {label}
+                          </span>
+                        );
+                      })()}
                     </td>
                   </tr>
                 ))}
