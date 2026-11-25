@@ -45,17 +45,9 @@ export default function Footer() {
 
         <div className="my-8 h-px bg-slate-800"></div>
 
-        <p className="text-center text-slate-400">
-          Built with <Heart size={16} className="inline text-red-500" /> for{" "}
-          <a
-            href="https://digitalheroesco.com"
-            target="_blank"
-            rel="noreferrer"
-            className="font-semibold text-cyan-400"
-          >
-            Digital Heroes Training Task
-          </a>
-        </p>
+        <p className="text-center font-semibold text-cyan-400">
+  Ambika Kashyap
+</p>
 
       </div>
     </footer>
