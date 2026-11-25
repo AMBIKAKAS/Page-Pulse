@@ -2,129 +2,148 @@ const axios = require("axios");
 const { parseHTML } = require("../utils/parser");
 
 const weights = {
-  title: 12,
-  description: 12,
+  title: 10,
+  description: 10,
   h1: 10,
   canonical: 10,
   viewport: 10,
-  robots: 8,
-  language: 8,
+  robots: 10,
+  language: 5,
   openGraph: 10,
   images: 10,
-  content: 10,
+  content: 15,
 };
 
-function createCheck(id, name, passed, weight, details, recommendation) {
+function createCheck(id, name, earnedPoints, weight, details, recommendation) {
+  const earned = Math.max(0, Math.min(weight, earnedPoints));
+
   return {
     id,
     name,
-    status: passed ? "passed" : "warning",
+    status: earned >= weight ? "passed" : earned > 0 ? "partial" : "warning",
     weight,
+    earnedPoints: earned,
     details,
-    recommendation: passed ? null : recommendation,
+    recommendation: earned >= weight ? null : recommendation,
   };
 }
 
 function generateSEOChecks(data) {
+  const titleLength = data.titleLength || 0;
+  const descriptionLength = data.descriptionLength || 0;
+
+  const titlePoints =
+    titleLength >= 30 && titleLength <= 60 ? 10 :
+    titleLength >= 20 && titleLength <= 70 ? 7 :
+    titleLength > 0 ? 4 : 0;
+
+  const descriptionPoints =
+    descriptionLength >= 120 && descriptionLength <= 160 ? 10 :
+    descriptionLength >= 70 && descriptionLength <= 180 ? 7 :
+    descriptionLength > 0 ? 4 : 0;
+
+  const headingPoints =
+    data.h1Count === 1 ? 10 :
+    data.h1Count > 1 ? 6 : 0;
+
+  const ogCount = [
+    data.ogTitle,
+    data.ogDescription,
+    data.ogImage,
+  ].filter(Boolean).length;
+
+  const imagePoints = data.images === 0
+    ? 10
+    : Math.round(((data.images - data.imagesMissingAlt) / data.images) * 10);
+
+  const contentPoints =
+    data.wordCount >= 600 ? 15 :
+    data.wordCount >= 300 ? 12 :
+    data.wordCount >= 150 ? 8 :
+    data.wordCount > 0 ? 4 : 0;
+
   return [
     createCheck(
-      "title",
-      "SEO Title",
-      data.titleLength >= 30 && data.titleLength <= 60,
-      weights.title,
+      "title", "SEO Title", titlePoints, weights.title,
       data.title
-        ? `Title contains ${data.titleLength} characters`
+        ? `Title contains ${titleLength} characters`
         : "Page title is missing",
-      "Add a descriptive title between 30 and 60 characters."
+      "Use a descriptive, relevant title. Around 30–60 characters is a useful guideline."
     ),
 
     createCheck(
-      "description",
-      "Meta Description",
-      data.descriptionLength >= 120 && data.descriptionLength <= 160,
-      weights.description,
+      "description", "Meta Description", descriptionPoints, weights.description,
       data.metaDescription
-        ? `Description contains ${data.descriptionLength} characters`
+        ? `Description contains ${descriptionLength} characters`
         : "Meta description is missing",
-      "Add a relevant meta description between 120 and 160 characters."
+      "Write a useful meta description. Around 120–160 characters is a practical guideline."
     ),
 
     createCheck(
-      "h1",
-      "Heading Structure",
-      data.h1Count === 1,
-      weights.h1,
+      "h1", "Heading Structure", headingPoints, weights.h1,
       `${data.h1Count} H1 heading(s) detected`,
-      "Use exactly one descriptive H1 heading for the main page topic."
+      "Use a clear main heading that describes the page topic. Avoid multiple competing H1 headings."
     ),
 
     createCheck(
-      "canonical",
-      "Canonical URL",
-      Boolean(data.canonical),
-      weights.canonical,
+      "canonical", "Canonical URL",
+      data.canonical ? 10 : 0, weights.canonical,
       data.canonical || "Canonical URL is missing",
-      "Add a canonical link tag to identify the preferred page URL."
+      "Add a canonical link tag when the page has a preferred URL."
     ),
 
     createCheck(
-      "viewport",
-      "Mobile Viewport",
-      Boolean(data.viewport),
-      weights.viewport,
+      "viewport", "Mobile Viewport",
+      data.viewport ? 10 : 0, weights.viewport,
       data.viewport || "Viewport meta tag is missing",
-      "Add a responsive viewport meta tag."
+      "Add a responsive viewport meta tag for mobile devices."
     ),
 
     createCheck(
-      "robots",
-      "Robots Directive",
-      !/noindex/i.test(data.robots),
-      weights.robots,
+      "robots", "Robots Directive",
+      /noindex/i.test(data.robots) ? 0 : 10, weights.robots,
       data.robots || "No explicit robots directive found",
-      "Review robots directives and ensure important pages are indexable."
+      "Review robots directives and ensure pages intended for search engines are indexable."
     ),
 
     createCheck(
-      "language",
-      "HTML Language",
-      Boolean(data.language),
-      weights.language,
+      "language", "HTML Language",
+      data.language ? 5 : 0, weights.language,
       data.language || "HTML language attribute is missing",
       "Add an appropriate lang attribute to the HTML element."
     ),
 
     createCheck(
-      "openGraph",
-      "Open Graph Metadata",
-      Boolean(data.ogTitle && data.ogDescription && data.ogImage),
-      weights.openGraph,
+      "openGraph", "Open Graph Metadata",
+      Math.round((ogCount / 3) * weights.openGraph), weights.openGraph,
       `${[
         data.ogTitle && "Title",
         data.ogDescription && "Description",
         data.ogImage && "Image",
       ].filter(Boolean).join(", ") || "No Open Graph tags"} detected`,
-      "Add Open Graph title, description and image metadata."
+      "Add Open Graph title, description and image metadata for better social sharing."
     ),
 
     createCheck(
-      "images",
-      "Image Accessibility",
-      data.imagesMissingAlt === 0,
-      weights.images,
+      "images", "Image Accessibility",
+      imagePoints, weights.images,
       `${data.imagesMissingAlt} of ${data.images} images missing ALT text`,
-      "Add meaningful ALT attributes to informative images."
+      "Add meaningful ALT text to informative images. Decorative images can use empty ALT text."
     ),
 
     createCheck(
-      "content",
-      "Content Depth",
-      data.wordCount >= 300,
-      weights.content,
+      "content", "Content Depth",
+      contentPoints, weights.content,
       `${data.wordCount} words detected`,
-      "Consider adding useful, relevant content to improve page coverage."
+      "Create useful, relevant content that satisfies the page's purpose. Word count alone does not determine content quality."
     ),
   ];
+}
+
+function calculateSEOScore(checks) {
+  return Math.round(
+    checks.reduce((total, check) => total + check.earnedPoints, 0)
+  );
 }
 
 async function checkBrokenLinks(links) {
@@ -188,17 +207,13 @@ const auditWebsiteService = async (url) => {
     const parsed = parseHTML(response.data, url);
     const checks = generateSEOChecks(parsed);
 
-    const seoScore = checks.reduce(
-      (score, check) => score +
-        (check.status === "passed" ? check.weight : 0),
-      0
-    );
+    const seoScore = calculateSEOScore(checks);
 
     const recommendations = checks
       .filter((check) => check.recommendation)
       .map((check) => ({
         category: check.id,
-        priority: check.status === "warning" ? "Improve" : "Passed",
+        priority: check.status === "warning" ? "High" : check.status === "partial" ? "Medium" : "Passed",
         title: check.name,
         description: check.recommendation,
       }));
@@ -230,4 +245,6 @@ const auditWebsiteService = async (url) => {
 
 module.exports = {
   auditWebsiteService,
+  generateSEOChecks,
+  calculateSEOScore,
 };

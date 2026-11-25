@@ -55,10 +55,11 @@ export default function ResultSection({ result }) {
 
   const downloadCSV = () => {
     const rows = [
-      ["SEO Check", "Status", "Weight", "Details", "Recommendation"],
+      ["SEO Check", "Status", "Earned Points", "Maximum Points", "Details", "Recommendation"],
       ...checks.map((item) => [
         item.name,
         item.status,
+        item.earnedPoints ?? (item.status === "passed" ? item.weight : 0),
         item.weight,
         item.details,
         item.recommendation || ""
@@ -226,13 +227,20 @@ export default function ResultSection({ result }) {
                     </p>
                   </div>
                 </div>
-                <span className={`w-fit rounded-full px-3 py-1 text-xs font-bold ${
-                  item.status === "passed"
-                    ? "bg-emerald-500/10 text-emerald-400"
-                    : "bg-amber-500/10 text-amber-400"
-                }`}>
-                  {item.status === "passed" ? "PASSED" : "NEEDS ATTENTION"}
-                </span>
+                <div className="flex w-fit flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-slate-800 px-3 py-1 text-xs font-bold text-slate-200">
+                    {item.earnedPoints ?? (item.status === "passed" ? item.weight : 0)}/{item.weight} pts
+                  </span>
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${
+                    item.status === "passed"
+                      ? "bg-emerald-500/10 text-emerald-400"
+                      : item.status === "partial"
+                        ? "bg-sky-500/10 text-sky-400"
+                        : "bg-amber-500/10 text-amber-400"
+                  }`}>
+                    {item.status === "passed" ? "PASSED" : item.status === "partial" ? "PARTIAL" : "NEEDS ATTENTION"}
+                  </span>
+                </div>
               </div>
 
               {item.recommendation && (
