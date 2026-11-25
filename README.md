@@ -1,258 +1,141 @@
-# 🚀 Page Pulse
+# Page Pulse 🚀
+### AI-Powered Website SEO Audit & Performance Analysis Platform
 
-## Modern Website Auditing Platform
+Page Pulse is a full-stack web application that helps users analyze website SEO health through automated audits. It provides actionable insights into website structure, metadata, and SEO-related factors through a clean, interactive dashboard.
 
-Page Pulse is a full-stack website auditing application that analyzes websites and provides important technical insights including performance details, HTML structure, metadata, and accessibility-related information.
+## 🌐 Live Demo
 
-The application allows users to enter any valid URL and generates a detailed audit report through a clean and interactive dashboard.
+- **Frontend:** https://page-pulse-delta-eight.vercel.app/
+- **Backend API:** https://page-pulse-backend-t6np.onrender.com/
 
----
-Live Demostration: https://page-pulse-delta-eight.vercel.app/
----
+## ✨ Features
 
-# ✨ Features
+- **User Authentication:** Secure user registration and login using JWT.
+- **Website SEO Audits:** Analyze websites by entering their URLs.
+- **SEO Score & Grades:** View an overall SEO score and grade.
+- **Detailed Audit Results:** Explore SEO metrics and improvement opportunities.
+- **Audit History:** Access previously performed audits.
+- **User-Specific Data:** Each user can access their own audit records.
+- **Responsive Dashboard:** Clean interface for desktop and mobile devices.
 
-- Website URL Analysis
-- HTTP Status Detection
-- Response Time Calculation
-- Page Title Extraction
-- Meta Description Analysis
-- H1 Tag Count
-- Missing Image ALT Detection
-- Word Count Analysis
-- URL Validation
-- Error Handling
-- Responsive Dashboard UI
-- Backend API Testing
+## 🛠️ Tech Stack
 
----
-
-# 📸 OVERVIEW
-<img src="screenshots/Screenshot%202026-07-25%20at%202.26.20%E2%80%AFPM.png"  width="800"/>
-
-<img src="screenshots/Screenshot%202026-07-25%20at%202.26.29%E2%80%AFPM.png"  width="800"/>
-
-<img src="screenshots/Screenshot%202026-07-25%20at%202.26.37%E2%80%AFPM.png" width="800"/>
-
-# 🛠️ Tech Stack
-
-## Frontend
-
+**Frontend**
 - React.js
 - Vite
 - Tailwind CSS
 - Framer Motion
 - Axios
+- Lucide React
 
-## Backend
-
+**Backend**
 - Node.js
 - Express.js
-- Axios
+- MongoDB
+- Mongoose
+- JSON Web Tokens (JWT)
 - Cheerio
-- Validator
-- CORS
+- Axios
 
-## Testing
+**Tools & Deployment**
+- Git & GitHub
+- Postman
+- Vercel (Frontend)
+- Render (Backend)
+- MongoDB Atlas (Database)
 
-- Vitest
-- Supertest
+## 🏗️ Architecture
 
----
-
-# 📂 Project Structure
-
-```
+```text
 Page Pulse
-
-├── client
-│   ├── src
-│   ├── components
-│   └── package.json
 │
-├── server
-│   ├── routes
-│   ├── tests
-│   ├── index.js
-│   └── package.json
+├── client/
+│   ├── React.js + Vite
+│   ├── Components
+│   ├── Dashboard
+│   └── API Integration
 │
-├── README.md
-
+└── server/
+    ├── Express.js API
+    ├── Authentication
+    ├── SEO Audit Services
+    ├── MongoDB Models
+    └── Protected Routes
 ```
 
----
+## ⚙️ Local Setup
 
-# ⚙️ Installation & Setup
-
-## Clone Repository
+### 1. Clone the repository
 
 ```bash
-git clone YOUR_REPOSITORY_URL
-
-cd page-pulse
+git clone https://github.com/AMBIKAKAS/Page-Pulse.git
+cd Page-Pulse
 ```
 
----
-
-# Backend Setup
+### 2. Backend Setup
 
 ```bash
 cd server
-
 npm install
+```
 
+Create a `.env` file inside the `server` directory:
+
+```env
+PORT=8000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+```
+
+Start the backend:
+
+```bash
 npm run dev
 ```
 
-Backend runs on:
-
-```
-http://localhost:5000
-```
-
----
-
-# Frontend Setup
+### 3. Frontend Setup
 
 Open another terminal:
 
 ```bash
 cd client
-
 npm install
+```
 
+Create a `.env` file inside `client`:
+
+```env
+VITE_API_URL=http://localhost:8000/api
+```
+
+Start the frontend:
+
+```bash
 npm run dev
 ```
 
-Frontend runs on:
+## 🔐 Security
 
-```
-http://localhost:5173
-```
+- JWT-based authentication.
+- Protected audit API routes.
+- User-specific audit data access.
+- Environment variables for sensitive configuration.
 
----
+## 🚀 Deployment
 
-# 🔌 API Documentation
+| Component | Platform |
+|---|---|
+| Frontend | Vercel |
+| Backend | Render |
+| Database | MongoDB Atlas |
 
-## Audit Website
-
-### POST
-
-```
-/api/audit
-```
-
-### Request Body
-
-```json
-{
-  "url": "https://example.com"
-}
-```
-
-### Response
-
-```json
-{
-  "success": true,
-  "data": {
-    "status": 200,
-    "title": "Example Domain",
-    "responseTime": "500 ms",
-    "h1Count": 1,
-    "imagesMissingAlt": 0,
-    "wordCount": 152
-  }
-}
-```
-
----
-
-# 🧪 Testing
-
-Backend validation tests are implemented using Vitest.
-
-Test cases:
-
-- Valid URL
-- Invalid URL
-- Empty URL
-
-Run tests:
-
-```bash
-cd server
-
-npm test
-```
-
-Expected:
-
-```
-✓ Valid URL
-✓ Invalid URL
-✓ Empty URL
-
-3 tests passed
-```
-
----
-
-# 🏗️ Design Decisions
-
-### Separate Frontend and Backend
-
-Frontend and backend are separated to improve scalability, maintainability, and deployment flexibility.
-
-### Cheerio HTML Parser
-
-Cheerio was used because it provides fast HTML parsing without requiring a browser environment.
-
-### Error Handling
-
-Implemented:
-
-- URL validation
-- Timeout handling
-- API error responses
-- Invalid input handling
-
-to provide a reliable user experience.
-
----
-
-# 🚀 Deployment
-
-## Frontend
-
-Deployed using:
-
-**Vercel**
-
-## Backend
-
-Deployed using:
-
-**Render**
-
----
-
-# 🤖 AI Usage
-
-AI tools were used to accelerate development, improve UI ideas, generate initial boilerplate, and assist with debugging.
-
-All AI-generated suggestions were reviewed, customized, tested, and modified manually before being included in the final implementation.
-
-
-
----
-
-# 👩‍💻 Author
+## 👩‍💻 Author
 
 **Ambika Kashyap**
 
-GitHub:
-https://github.com/AMBIKAS
+- GitHub: [AMBIKAKAS](https://github.com/AMBIKAKAS)
+- LinkedIn: [Ambika Kashyap](https://www.linkedin.com/in/ambika70026/)
 
-LinkedIn:
-https://linkedin.com/in/ambika70026
+---
+
+*Built to make website SEO analysis more accessible through a modern full-stack experience.*
